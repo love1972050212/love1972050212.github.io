@@ -10,9 +10,9 @@ import TheWelcome from '../components/TheWelcome.vue'
             <button class="right">新增</button>
         </div>
         <div class="w-full flex">
-            <button class="content content-1" data-search="all">全部</button>
-            <button class="content content-2" data-search="isTodo">已執行</button>
-            <button class="content content-3" data-search="notTodo">未執行</button>
+            <button class="" data-search="all">全部</button>
+            <button class="" data-search="isTodo">已執行</button>
+            <button class="" data-search="notTodo">未執行</button>
         </div>
         <div class="w-full flex">
                 <div class="flex-1">執行</div>
