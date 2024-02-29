@@ -1,55 +1,74 @@
-    <script>
-    export default {
-        data() {
-            return {
-                newTodo: '',
-                todos: [],
-                filter: 'all'
-            };
-        },
-        computed: {
-            filteredTodos() {
-                if (this.filter === 'all') {
-                    return this.todos;
-                } else if (this.filter === 'isTodo') {
-                    return this.todos.filter(todo => todo.isDone);
-                } else if (this.filter === 'notTodo') {
-                    return this.todos.filter(todo => !todo.isDone);
-                }
-            }
-        },
-        methods: {
-            addTodo() {
-                if (this.newTodo.trim() !== '') {
-                    this.todos.push({
-                        text: this.newTodo,
-                        isDone: false,
-                        editing: false
-                    });
-                    this.newTodo = '';
-                }
-            },
-            toggleDone(index) {
-                this.todos[index].isDone = !this.todos[index].isDone;
-            },
-            editTodo(index) {
-    if (this.todos[index].text.trim() !== '') { // 檢查待辦事項是否為空
-        this.todos[index].editing = !this.todos[index].editing;
-    } else {
-        // 提示用戶待辦事項不能為空
-        alert('待辦事項不能為空');
-    }
-},
-
-            deleteTodo(index) {
-                this.todos.splice(index, 1);
-            },
-            filterTodos(filter) {
-                this.filter = filter;
+<script>
+export default {
+    data() {
+        return {
+            newTodo: '',
+            todos: [],
+            filter: 'all'
+        };
+    },
+    computed: {
+        filteredTodos() {
+            if (this.filter === 'all') {
+                return this.todos;
+            } else if (this.filter === 'isTodo') {
+                return this.todos.filter(todo => todo.isDone);
+            } else if (this.filter === 'notTodo') {
+                return this.todos.filter(todo => !todo.isDone);
             }
         }
-    };
-    </script>
+    },
+    mounted() {
+    this.loadFromLocalStorage();
+},
+
+    methods: {
+        addTodo() {
+            if (this.newTodo.trim() !== '') {
+                this.todos.push({
+                    text: this.newTodo,
+                    isDone: false,
+                    editing: false
+                });
+                this.saveToLocalStorage();
+                this.newTodo = '';
+            }
+        },
+        saveToLocalStorage() {
+        localStorage.setItem('todos', JSON.stringify(this.todos));
+    },
+    loadFromLocalStorage() {
+    const savedTodos = localStorage.getItem('todos');
+    if (savedTodos) {
+        this.todos = JSON.parse(savedTodos);
+    }
+},
+        toggleDone(index) {
+            this.todos[index].isDone = !this.todos[index].isDone;
+            this.saveToLocalStorage();
+        },
+        editTodo(index) {
+            if (this.todos[index].text.trim() !== '') {
+                this.todos[index].editing = !this.todos[index].editing;
+                this.saveToLocalStorage();
+            } else {
+                alert('待辦事項不能為空');
+            }
+        },
+        deleteTodo(index) {
+            this.todos.splice(index, 1);
+            this.saveToLocalStorage();
+        },
+        filterTodos(filter) {
+            this.filter = filter;
+        },
+    },
+    created() {
+        this.loadFromLocalStorage();
+    }
+};
+</script>
+
 <template>
   <div class="w-full h-screen bg-indigo-500 flex justify-center items-center">
     <div class="w-1/2 bg-white rounded-lg shadow-lg p-8">
