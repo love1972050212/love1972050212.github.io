@@ -64,8 +64,8 @@
         <div v-for="(todo, index) in filteredTodos" :key="index" class="flex items-center border-b border-gray-300 py-2">
             <div class="w-1/4">{{ todo.isDone ? '已完成' : '未完成' }}</div>
             <div class="w-1/2">
-                <input v-if="!todo.editing" type="text" v-model="todo.text" readonly class="input-text">
-                <input v-else type="text" v-model="todo.text" class="input-text" placeholder="新增待辦事項">
+                <input v-if="!todo.editing" type="text" v-model="todo.text" readonly class="input-text" placeholder="新增待辦事項">
+                <input v-else type="text" v-model="todo.text" class="input-text">
             </div>
             <div class="w-1/4 flex justify-end items-center">
                 <button class="edit-btn" @click="editTodo(index)">{{ todo.editing ? '儲存' : '編輯' }}</button>
