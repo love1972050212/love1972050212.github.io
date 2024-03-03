@@ -4,7 +4,8 @@ export default {
         return {
             newTodo: '',
             todos: [],
-            filter: 'all'
+            filter: 'all',
+            todoIdCounter: 0 // 追蹤待辦事項的最大 ID
         };
     },
     computed: {
@@ -19,13 +20,14 @@ export default {
         }
     },
     mounted() {
-    this.loadFromLocalStorage();
-},
+        this.loadFromLocalStorage();
+    },
 
     methods: {
         addTodo() {
             if (this.newTodo.trim() !== '') {
                 this.todos.push({
+                    id: this.todoIdCounter++,
                     text: this.newTodo,
                     isDone: false,
                     editing: false
@@ -35,14 +37,14 @@ export default {
             }
         },
         saveToLocalStorage() {
-        localStorage.setItem('todos', JSON.stringify(this.todos));
-    },
-    loadFromLocalStorage() {
-    const savedTodos = localStorage.getItem('todos');
-    if (savedTodos) {
-        this.todos = JSON.parse(savedTodos);
-    }
-},
+            localStorage.setItem('todos', JSON.stringify(this.todos));
+        },
+        loadFromLocalStorage() {
+            const savedTodos = localStorage.getItem('todos');
+            if (savedTodos) {
+                this.todos = JSON.parse(savedTodos);
+            }
+        },
         toggleDone(index) {
             this.todos[index].isDone = !this.todos[index].isDone;
             this.saveToLocalStorage();
@@ -69,6 +71,7 @@ export default {
 };
 </script>
 
+
 <template>
   <div class="w-full h-screen bg-indigo-500 flex justify-center items-center">
     <div class="w-1/2 bg-white rounded-lg shadow-lg p-8">
@@ -86,20 +89,20 @@ export default {
             <div class="w-1/2 font-bold">事項</div>
             <div class="w-1/4 font-bold">操作</div>
         </div>
-        <div v-for="(todo, index) in filteredTodos" :key="index" class="flex items-center border-b border-gray-300 py-2">
-            <div class="w-1/4">{{ todo.isDone ? '已完成' : '未完成' }}</div>
-            <div class="w-1/2">
-                <input v-if="!todo.editing" type="text" v-model="todo.text" readonly class="input-text">
-                <input v-else type="text" v-model="todo.text" class="input-text">
-            </div>
-            <div class="w-1/4 flex justify-end items-center">
-                <button class="edit-btn" @click="editTodo(index)">{{ todo.editing ? '儲存' : '編輯' }}</button>
-                <button class="delete-btn" @click="deleteTodo(index)">刪除</button>
-                <button class="done-btn" @click="toggleDone(index)">{{ todo.isDone ? '未完成' : '完成' }}</button>
-            </div>
-        </div>
+        <div v-for="(todo, index) in filteredTodos" :key="todo.id" class="flex items-center border-b border-gray-300 py-2">
+    <div class="w-1/4">{{ todo.isDone ? '已完成' : '未完成' }}</div>
+    <div class="w-1/2">
+        <input v-if="!todo.editing" type="text" v-model="todo.text" readonly class="input-text">
+        <input v-else type="text" v-model="todo.text" class="input-text">
     </div>
-  </div>
+    <div class="w-1/4 flex justify-end items-center">
+        <button class="edit-btn" @click="editTodo(index)">{{ todo.editing ? '儲存' : '編輯' }}</button>
+        <button class="delete-btn" @click="deleteTodo(index)">刪除</button>
+        <button class="done-btn" @click="toggleDone(index)">{{ todo.isDone ? '未完成' : '完成' }}</button>
+    </div>
+</div>
+</div>
+</div>
 </template>
 
 
